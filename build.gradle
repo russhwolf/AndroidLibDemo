@@ -1,17 +1,31 @@
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'digital.wup:android-maven-publish:3.6.2'
+    }
+}
+
 plugins {
     id 'kotlin-multiplatform' version '1.3.11'
 }
 repositories {
-    mavenCentral()
+    google()
+    jcenter()
 }
+
 group 'com.example'
 version '0.0.1'
 
+apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 
 kotlin {
     targets {
-        fromPreset(presets.jvm, 'android')
+        fromPreset(presets.android, 'android')
         fromPreset(presets.js, 'js')
         // For ARM, preset should be changed to presets.iosArm32 or presets.iosArm64
         // For Linux, preset should be changed to e.g. presets.linuxX64
@@ -32,7 +46,7 @@ kotlin {
         }
         androidMain {
             dependencies {
-                implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+                implementation 'org.jetbrains.kotlin:kotlin-stdlib'
             }
         }
         androidTest {
@@ -54,6 +68,31 @@ kotlin {
         iosMain {
         }
         iosTest {
+        }
+    }
+}
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        minSdkVersion 15
+    }
+}
+
+// workaround for https://youtrack.jetbrains.com/issue/KT-27170
+configurations {
+    compileClasspath
+}
+
+apply plugin: 'digital.wup.android-maven-publish'
+
+publishing {
+    publications {
+        mavenAar(MavenPublication) {
+            artifact("$buildDir/outputs/aar/AndroidLibraryDemo-release.aar")
+            artifactId = project.name + "-" + kotlin.targets.android.name.toLowerCase()
+            from components.android
+            artifacts.removeAll(artifacts.matching { !it.file.name.endsWith('aar') })
         }
     }
 }
