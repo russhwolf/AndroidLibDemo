@@ -11,7 +11,7 @@ apply plugin: 'maven-publish'
 
 kotlin {
     targets {
-        fromPreset(presets.jvm, 'jvm')
+        fromPreset(presets.jvm, 'android')
         fromPreset(presets.js, 'js')
         // For ARM, preset should be changed to presets.iosArm32 or presets.iosArm64
         // For Linux, preset should be changed to e.g. presets.linuxX64
@@ -30,12 +30,12 @@ kotlin {
                 implementation 'org.jetbrains.kotlin:kotlin-test-annotations-common'
             }
         }
-        jvmMain {
+        androidMain {
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
             }
         }
-        jvmTest {
+        androidTest {
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-test'
                 implementation 'org.jetbrains.kotlin:kotlin-test-junit'
